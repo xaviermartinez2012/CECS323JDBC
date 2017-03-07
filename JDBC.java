@@ -3,7 +3,7 @@
 import java.sql.*;
 import java.util.Scanner;
 
-//Hello
+//Hello Brian
 /**
  *
  * @author Mimi Opkins with some tweaking from Dave Brown
