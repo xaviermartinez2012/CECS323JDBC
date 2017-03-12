@@ -3,6 +3,7 @@
 
 import java.sql.*;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -15,6 +16,9 @@ public class JDBC {
     static String USER;
     static String PASS;
     static String DBNAME;
+
+    // Prepared Strings
+    static String deleteBookStatement = "DELETE FROM books WHERE groupname=? AND booktitle=?";
     
     /* 
     Each % denotes the start of a new field.
@@ -88,7 +92,62 @@ public class JDBC {
         }
         return user_response;
     }
-
+    
+    public static String[] DeleteBookUserInterface(Scanner in) {
+        boolean correct_response = false;
+        String[] arguments = new String[2];
+        arguments[0] = "...";
+        arguments[1] = "...";
+        while(!correct_response) {
+            System.out.println("-- Enter the groupname.");
+            System.out.print("> ");
+            in.nextLine();
+            try {
+                arguments[0] = in.nextLine();
+                System.out.println("-- Enter the book title.");
+                System.out.print("> ");
+                arguments[1] = in.nextLine();
+                correct_response = true;
+            } catch (NoSuchElementException e) {
+                System.out.println("-- ERROR: No line was found!");
+            } catch (IllegalStateException state) {
+                System.out.println("-- ERROR: Scanner is closed!");
+                return arguments;
+            }
+        }
+        return arguments;
+    }
+    public static boolean DeleteBook(Connection conn, String groupName, String bookTitle){
+        boolean statement = false;
+        boolean setStatement = false;
+        boolean executeStatement = false;
+        boolean deletion = false;
+        try {
+            PreparedStatement deleteStatement = conn.prepareStatement(deleteBookStatement);
+            statement = true;
+            deleteStatement.setString(1, groupName);
+            deleteStatement.setString(2, bookTitle);
+            setStatement = true;
+            int status = deleteStatement.executeUpdate();
+            executeStatement = true;
+            if (status != 0) {
+                deletion = true;
+            }
+        } catch (SQLTimeoutException timeOut) {
+            System.out.println("-- ERROR: Executing Statement Timed Out!");
+        } catch (SQLException sql) {
+            if (!statement) {
+                System.out.println("-- ERROR: Preparing Statement Failed!");
+            } else if (!setStatement) {
+                System.out.println("-- ERROR: Setting Statement Failed!");
+            } else if (!executeStatement) {
+                System.out.println("-- ERROR: Executing Statement Failed!");
+            } else {
+                System.out.println("-- ERROR: Unknown Error!");
+            }
+        }
+        return deletion;
+    }
     public static void main(String[] args) {
         /* 
         Prompt the user for the database name, and the credentials.
@@ -106,6 +165,8 @@ public class JDBC {
         DB_URL = DB_URL + DBNAME + ";user=" + USER + ";password=" + PASS;
 
         Connection conn = null; //initialize the connection
+        boolean getConnection = false;
+        boolean closeConnection = false;
         try {
             // Register JDBC driver.
             Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -113,6 +174,7 @@ public class JDBC {
             // Open a connection.
             System.out.println("-- Connecting to database...");
             conn = DriverManager.getConnection(DB_URL);
+            getConnection = true;
 
             // User Interface.
             boolean exit = false;
@@ -136,6 +198,14 @@ public class JDBC {
                 case 8:
                     break;
                 case 9:
+                    String[] arguments = DeleteBookUserInterface(in);
+                    boolean deletion = DeleteBook(conn, arguments[0], arguments[1]);
+                    if (deletion) {
+                        System.out.println("-- Successfully deleted \"" + arguments[1] + "\" by " + arguments[0] + ".");
+                    }
+                    else {
+                        System.out.println("-- Deletion failed!");
+                    }
                     break;
                 case 10:
                     exit = true;
@@ -144,10 +214,19 @@ public class JDBC {
             }
             // Clean-up environment
             conn.close();
+            closeConnection = true;
             in.close();
+        } catch (SQLTimeoutException timeOut){
+            System.out.println("-- ERROR: Connection Timed Out!");
         } catch (SQLException se) {
             //Handle errors for JDBC
-            se.printStackTrace();
+            if (!getConnection) {
+                System.out.println("-- ERROR: Database access error occurred when attempting to connect!");
+            } else if (!closeConnection) {
+                System.out.println("-- ERROR: Closing connection to database failed!");
+            } else {
+                System.out.println("-- ERROR: Unknown Error!");
+            }
         } catch (Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
