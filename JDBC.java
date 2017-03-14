@@ -181,15 +181,15 @@ public class JDBC {
             while (!exit) {
                 int userChoice = UserInterface(in);
                 switch (userChoice) {
-                case 1:
+                case 1: ListAllWritingGroups();
                     break;
                 case 2:
                     break;
-                case 3:
+                case 3: ListAllPublishers();
                     break;
                 case 4:
                     break;
-                case 5:
+                case 5: ListAllBooks();
                     break;
                 case 6:
                     break;
@@ -241,4 +241,232 @@ public class JDBC {
             } // end finally
         } // end try
     }// end main
+    
+    
+    public static void ListAllWritingGroups(){
+        
+        Connection conn = null; //initialize the connection
+        Statement stmt = null;  //initialize the statement that we're using
+        
+                try {
+            //STEP 2: Register JDBC driver
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            //STEP 3: Open a connection
+            conn = DriverManager.getConnection(DB_URL);
+
+            //STEP 4: Execute a query 
+            stmt = conn.createStatement();
+            String sql;
+            sql = "SELECT groupname,headwriter,yearformed,subject FROM writinggroups";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //STEP 5: Extract data from result set          
+              System.out.println("Writing Groups:");
+               System.out.println("group name          head writer         year formed         subject");
+               System.out.println("----------          -----------         -----------         -------");
+
+            while (rs.next()) {
+                //Retrieve by column name
+                    String gn = rs.getString("groupname");
+                    String hw = rs.getString("headwriter");
+                    String yf = rs.getString("yearformed");
+                    String sj = rs.getString("subject");
+
+                    //alignment
+                    String indent = "                    "; 
+                    gn += indent.substring(0, indent.length() - gn.length() );
+                    hw += indent.substring(0, indent.length() - hw.length() );
+                    yf += indent.substring(0, indent.length() - yf.length() );
+                    sj += indent.substring(0, indent.length() - sj.length() );
+
+
+                   //Display values
+                   System.out.printf( dispNull(gn)+dispNull(hw)+dispNull(yf)+dispNull(sj) );
+                   System.out.println();
+            }
+            System.out.println();
+        
+            //STEP 6: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException se2) {
+            }// nothing we can do
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }//end try
+    
+    }
+    
+    
+    
+        public static void ListAllPublishers(){
+            
+            Connection conn = null; //initialize the connection
+            Statement stmt = null;  //initialize the statement that we're using
+        
+            try {
+            //STEP 2: Register JDBC driver
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            //STEP 3: Open a connection
+            conn = DriverManager.getConnection(DB_URL);
+
+            //STEP 4: Execute a query 
+            stmt = conn.createStatement();
+            String sql;
+            sql = "SELECT publishername,publisheraddress,publisherphone,publisheremail FROM publishers";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //STEP 5: Extract data from result set          
+              System.out.println("Publishers:");
+               System.out.println("publisher name      address             phone               email");
+               System.out.println("--------------      -------             ------              -----");
+
+            while (rs.next()) {
+                //Retrieve by column name
+                    String gn = rs.getString("publishername");
+                    String hw = rs.getString("publisheraddress");
+                    String yf = rs.getString("publisherphone");
+                    String sj = rs.getString("publisheremail");
+
+                    //alignment
+                    String indent = "                    "; 
+                    gn += indent.substring(0, indent.length() - gn.length() );
+                    hw += indent.substring(0, indent.length() - hw.length() );
+                    yf += indent.substring(0, indent.length() - yf.length() );
+                    sj += indent.substring(0, indent.length() - sj.length() );
+
+
+                   //Display values
+                   System.out.printf( dispNull(gn)+dispNull(hw)+dispNull(yf)+dispNull(sj) );
+                   System.out.println();
+            }
+            System.out.println();
+        
+            //STEP 6: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException se2) {
+            }// nothing we can do
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }//end try
+    
+    }
+        
+        
+        
+        public static void ListAllBooks(){
+            
+            Connection conn = null; //initialize the connection
+            Statement stmt = null;  //initialize the statement that we're using
+        
+            try {
+            //STEP 2: Register JDBC driver
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            //STEP 3: Open a connection
+            conn = DriverManager.getConnection(DB_URL);
+
+            //STEP 4: Execute a query 
+            stmt = conn.createStatement();
+            String sql;
+            sql = "SELECT groupname,booktitle,publishername,yearpublished,numberpages FROM books";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            //STEP 5: Extract data from result set          
+              System.out.println("books:");
+               System.out.println("title               author              publisher           year published      number pages");
+               System.out.println("-----               ------              ---------           -------------       ------------");
+
+            while (rs.next()) {
+                //Retrieve by column name
+                    String gn = rs.getString("booktitle");
+                    String hw = rs.getString("groupname");
+                    String yf = rs.getString("publishername");
+                    String sj = rs.getString("yearpublished");
+                    String np = rs.getString("numberpages");
+
+                    //alignment
+                    String indent = "                    "; 
+                    gn += indent.substring(0, indent.length() - gn.length() );
+                    hw += indent.substring(0, indent.length() - hw.length() );
+                    yf += indent.substring(0, indent.length() - yf.length() );
+                    sj += indent.substring(0, indent.length() - sj.length() );
+                    np += indent.substring(0, indent.length() - np.length() );
+
+
+                   //Display values
+                   System.out.printf( dispNull(gn)+dispNull(hw)+dispNull(yf)+dispNull(sj)+dispNull(np) );
+                   System.out.println();
+            }
+            System.out.println();
+        
+            //STEP 6: Clean-up environment
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch (Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException se2) {
+            }// nothing we can do
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }//end finally try
+        }//end try
+    
+    }
+    
+    
 }// end JDBC
