@@ -415,6 +415,7 @@ public class JDBC {
                     ListAllPublishers();
                     break;
                 case 4:
+                    ListPublisherSpecified(in);
                     break;
                 case 5:
                     ListAllBooks();
