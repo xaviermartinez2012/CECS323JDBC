@@ -21,4 +21,7 @@ The code rules are as follows:
 * 􏰀Handle any SQLExceptions that are thrown
 * Use a NetBeans/Derby database for this project
 * 􏰀Make sure you there is enough sample data to properly demonstrate the project
-  * 􏰀The data can be fictional but it must be meaningful. I do not want to see Book One, Book Two, etc...
+  * 􏰀The data can be fictional but it must be meaningful. Should not be Book One, Book Two, etc...
+
+The instuctions can be found at:
+[JDBC Project](http://web.csulb.edu/~dbrown/CECS323/Projects/JDBC/CECS%20323%20Project%20JDBC%20Project.pdf)
