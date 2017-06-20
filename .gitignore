@@ -4,3 +4,6 @@
 *.xml
 *.properties
 *.mf
+build/
+nbproject/
+src/
